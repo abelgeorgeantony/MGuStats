@@ -1,0 +1,71 @@
+{
+  "semester_1": [
+    { "date": "DECEMBER_2018", "value": "13", "description": "FIRST SEMESTER CBCS EXAMINATION DECEMBER 2018" },
+    { "date": "DECEMBER_2023", "value": "120", "description": "FIRST SEMESTER CBCS EXAMINATION DECEMBER 2023" },
+    { "date": "FEBRUARY_2023", "value": "90", "description": "FIRST SEMESTER CBCS EXAMINATION FEBRUARY 2023" },
+    { "date": "JANUARY_2018", "value": "5", "description": "FIRST SEMESTER CBCS EXAMINATION JANUARY 2018" },
+    { "date": "JUNE_2022", "value": "72", "description": "FIRST SEMESTER CBCS EXAMINATION JUNE 2022" },
+    { "date": "OCTOBER_2019", "value": "24", "description": "FIRST SEMESTER CBCS EXAMINATION OCTOBER 2019" },
+    { "date": "SEPTEMBER_2021", "value": "52", "description": "FIRST SEMESTER CBCS EXAMINATION SEPTEMBER 2021" },
+    { "date": "DECEMBER_2018", "value": "14", "description": "FIRST SEMESTER CBCS SUPPLEMENTARY EXAMINATION DECEMBER 2018" },
+    { "date": "DECEMBER_2024", "value": "147", "description": "FIRST SEMESTER CBCS SUPPLEMENTARY EXAMINATION DECEMBER 2024" },
+    { "date": "NOVEMBER_2025", "value": "183", "description": "FIRST SEMESTER CBCS SUPPLEMENTARY EXAMINATION NOVEMBER 2025" }
+  ],
+  "semester_2": [
+    { "date": "DECEMBER_2021", "value": "59", "description": "SECOND SEMESTER CBCS EXAMINATION DECEMBER 2021" },
+    { "date": "JUNE_2023", "value": "106", "description": "SECOND SEMESTER CBCS EXAMINATION JUNE 2023" },
+    { "date": "MAY_2018", "value": "8", "description": "SECOND SEMESTER CBCS EXAMINATION MAY 2018" },
+    { "date": "MAY_2019", "value": "17", "description": "SECOND SEMESTER CBCS EXAMINATION MAY 2019" },
+    { "date": "MAY_2024", "value": "130", "description": "SECOND SEMESTER CBCS EXAMINATION MAY 2024" },
+    { "date": "OCTOBER_2020", "value": "33", "description": "SECOND SEMESTER CBCS EXAMINATION OCTOBER 2020" },
+    { "date": "OCTOBER_2022", "value": "79", "description": "SECOND SEMESTER CBCS EXAMINATION OCTOBER 2022" },
+    { "date": "APRIL_2025", "value": "160", "description": "SECOND SEMESTER CBCS SUPPLEMENTARY EXAMINATION APRIL 2025" }
+  ],
+  "semester_3": [
+    { "date": "JULY_2021", "value": "47", "description": "THIRD SEMESTER CBCS 2019 ADMISSION REGULAR EXAMINATION JULY 2021" },
+    { "date": "JANUARY_2023", "value": "87", "description": "THIRD SEMESTER CBCS EXAMINATION JANUARY 2023" },
+    { "date": "MARCH_2022", "value": "63", "description": "THIRD SEMESTER CBCS EXAMINATION MARCH  2022" },
+    { "date": "OCTOBER_2018", "value": "10", "description": "THIRD SEMESTER CBCS EXAMINATION OCTOBER 2018" },
+    { "date": "OCTOBER_2019", "value": "22", "description": "THIRD SEMESTER CBCS EXAMINATION OCTOBER 2019" },
+    { "date": "OCTOBER_2023", "value": "113", "description": "THIRD SEMESTER CBCS EXAMINATION OCTOBER 2023" },
+    { "date": "OCTOBER_2024", "value": "142", "description": "THIRD SEMESTER CBCS EXAMINATION OCTOBER 2024" },
+    { "date": "FEBRUARY_2021", "value": "39", "description": "THIRD SEMESTER CBCS SUPPLEMENTARY EXAMINATION FEBRUARY 2021" },
+    { "date": "NOVEMBER_2025", "value": "180", "description": "THIRD SEMESTER CBCS SUPPLEMENTARY EXAMINATION NOVEMBER 2025" }
+  ],
+  "semester_4": [
+    { "date": "NOVEMBER_2021", "value": "50", "description": "FOURTH SEMESTER 2019 ADMISSION REGULAR CBCS EXAMINATION NOVEMBER 2021" },
+    { "date": "AUGUST_2022", "value": "77", "description": "FOURTH SEMESTER 2020 ADMISSION REGULAR CBCS EXAMINATION AUGUST 2022" },
+    { "date": "MAY_2023", "value": "104", "description": "FOURTH SEMESTER 2021 ADMISSION REGULAR CBCS EXAMINATION MAY 2023" },
+    { "date": "APRIL_2024", "value": "127", "description": "FOURTH SEMESTER CBCS EXAMINATION APRIL 2024" },
+    { "date": "MARCH_2020", "value": "30", "description": "FOURTH SEMESTER CBCS EXAMINATION MARCH 2020" },
+    { "date": "MARCH_2025", "value": "155", "description": "FOURTH SEMESTER CBCS EXAMINATION MARCH 2025" },
+    { "date": "MAY_2019", "value": "15", "description": "FOURTH SEMESTER CBCS EXAMINATION MAY 2019" },
+    { "date": "APRIL_2022", "value": "69", "description": "FOURTH SEMESTER CBCS SUPPLEMENTARY EXAMINATION APRIL 2022" },
+    { "date": "MARCH_2021", "value": "41", "description": "FOURTH SEMESTER CBCS SUPPLEMENTARY EXAMINATION MARCH 2021" },
+    { "date": "MARCH_2023", "value": "97", "description": "FOURTH SEMESTER CBCS SUPPLEMENTARY EXAMINATION MARCH 2023" }
+  ],
+  "semester_5": [
+    { "date": "FEBRUARY_2020", "value": "27", "description": "FIFTH SEMESTER CBCS 2017 ADMISSION SUPPLEMENTARY EXAMINATION FEBRUARY 2020" },
+    { "date": "JULY_2021", "value": "46", "description": "FIFTH SEMESTER CBCS 2018 ADMISSION SUPPLEMENTARY EXAMINATION JULY 2021" },
+    { "date": "MAY_2022", "value": "70", "description": "FIFTH SEMESTER CBCS 2019 ADMISSION SUPPLEMENTARY EXAMINATION MAY 2022" },
+    { "date": "APRIL_2023", "value": "98", "description": "FIFTH SEMESTER CBCS 2020 ADMISSION SUPPLEMENTARY EXAMINATION APRIL 2023" },
+    { "date": "MARCH_2024", "value": "126", "description": "FIFTH SEMESTER CBCS 2021 ADMISSION SUPPLEMENTARY EXAMINATION MARCH 2024" },
+    { "date": "JANUARY_2021", "value": "36", "description": "FIFTH SEMESTER CBCS EXAMINATION JANUARY 2021" },
+    { "date": "JANUARY_2022", "value": "60", "description": "FIFTH SEMESTER CBCS EXAMINATION JANUARY 2022" },
+    { "date": "NOVEMBER_2022", "value": "83", "description": "FIFTH SEMESTER CBCS EXAMINATION NOVEMBER 2022" },
+    { "date": "OCTOBER_2019", "value": "23", "description": "FIFTH SEMESTER CBCS EXAMINATION OCTOBER 2019" },
+    { "date": "OCTOBER_2023", "value": "114", "description": "FIFTH SEMESTER CBCS EXAMINATION OCTOBER 2023" },
+    { "date": "OCTOBER_2024", "value": "143", "description": "FIFTH SEMESTER CBCS EXAMINATION OCTOBER 2024" },
+    { "date": "OCTOBER_2025", "value": "177", "description": "FIFTH SEMESTER CBCS EXAMINATION OCTOBER 2025" },
+    { "date": "JANUARY_2026", "value": "187", "description": "FIFTH SEMESTER CBCS SPECIAL SUPPLEMENTARY EXAMINATION JANUARY 2026" },
+    { "date": "FEBRUARY_2025", "value": "153", "description": "FIFTH SEMESTER CBCS SUPPLEMENTARY EXAMINATION FEBRUARY 2025" }
+  ],
+  "semester_6": [
+    { "date": "APRIL_2021", "value": "42", "description": "SIXTH SEMESTER CBCS EXAMINATION APRIL 2021" },
+    { "date": "MARCH_2020", "value": "29", "description": "SIXTH SEMESTER CBCS EXAMINATION MARCH 2020" },
+    { "date": "MARCH_2022", "value": "64", "description": "SIXTH SEMESTER CBCS EXAMINATION MARCH 2022" },
+    { "date": "MARCH_2023", "value": "93", "description": "SIXTH SEMESTER CBCS EXAMINATION MARCH 2023" },
+    { "date": "MARCH_2024", "value": "124", "description": "SIXTH SEMESTER CBCS EXAMINATION MARCH 2024" },
+    { "date": "MARCH_2025", "value": "154", "description": "SIXTH SEMESTER CBCS EXAMINATION MARCH 2025" }
+  ]
+}

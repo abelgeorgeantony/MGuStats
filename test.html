@@ -1,0 +1,554 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Mahatma Gandhi University CBCSS Revised Scheme</title>
+    <link href="https://dsdc.mgu.ac.in/exQpMgmt/css/style.css" rel="stylesheet" type="text/css" />
+    <!--<link href="https://dsdc.mgu.ac.in/exQpMgmt/css/style2.css" rel="stylesheet" type="text/css" />-->
+    <link rel="stylesheet" href="https://dsdc.mgu.ac.in/exQpMgmt/css/userstylecap.css" type="text/css" />
+    <link rel="stylesheet" href="https://dsdc.mgu.ac.in/exQpMgmt/css/public_style.css" type="text/css" />
+    <!--<link rel="stylesheet" href="https://dsdc.mgu.ac.in/exQpMgmt/css/style.default.css" type="text/css"/>-->
+
+    <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <script language="javascript" src="js/ajax/ajax.js"></script>
+    <script type="text/javascript" src="https://dsdc.mgu.ac.in/exQpMgmt//js/formValidation.js"></script>
+    <script language="javascript">
+        //			function displayContentHolder(){
+        //				document.getElementById('mgu_btech_contentholder').style.display="block";	
+        //				document.getElementById('mgu_btech_loginpanel').style.display="block";
+        //				 window.history.forward();
+        //   								
+        //			} 
+        //			function noBack() { window.history.forward(); }
+
+    </script>
+
+    <style type="text/css">
+        .bord_rslt {
+            border: solid 1px #333;
+            border-collapse: inherit;
+            background-color: #FFF;
+        }
+
+        .noPrint {
+            display: none;
+        }
+
+        html:after {
+            /* common custom values */
+            content: "MG University";
+            /* your site name */
+            font-size: 400%;
+            /* font size */
+            color: rgba(0, 0, 0, .1);
+            /* alpha, could be even rgba(0,0,0,.05) */
+
+
+            z-index: 9999;
+            cursor: default;
+            display: block;
+            position: fixed;
+            top: 33%;
+            right: 0;
+            bottom: 0;
+            left: 15%;
+            font-family: sans-serif;
+            font-weight: normal;
+            font-style: italic;
+            text-align: center;
+            line-height: 100%;
+
+            -webkit-pointer-events: none;
+            -moz-pointer-events: none;
+            -ms-pointer-events: none;
+            -o-pointer-events: none;
+            pointer-events: none;
+
+            -webkit-transform: rotate(-45deg);
+            -moz-transform: rotate(-45deg);
+            -ms-transform: rotate(-45deg);
+            -o-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        }
+    </style>
+    <!--<script type="text/javascript">
+
+$("#btnresult").click(function(e) {
+    
+    e.preventDefault();
+    alert('dfgvdf');exit();
+    var exam_id =$('#activeExms').val();
+    var course  =$('#course').val();
+    var program = $('#program').val();
+    var prjid="";   alert (exam_id);
+    if (exam_id=="0"){
+		alert("Please Select Exam");
+        else if(course==0)
+            alert("Please Select Course");
+        else{
+    
+    $.ajax({
+        type: "POST",
+        url: "/pages/test/",
+        data: { 
+            id: $(this).val(),
+            access_token: $("#access_token").val() 
+        },
+        success: function(result) {
+            alert('ok');
+        },
+        error: function(result) {
+            alert('error');
+        }
+    });
+}
+    }
+});
+</script>-->
+
+</head>
+
+<body>
+    <center>
+
+        <!--<div class="topline"></div>-->
+        <table align="center" cellpadding="0" cellspacing="0" width="80%" bgcolor="#FFFFFF"
+            style="box-shadow: 0px 4px 4px 4px #a2a7ac;border: 1px solid #84888c">
+            <tr class="header">
+                <td colspan="2" align="left" class="header">
+                    <table cellpadding="0" cellspacing="0" width="100%">
+                        <tr class="topgradiant" height="85px">
+                            <td width="55" style="padding-left:5px;"><img
+                                    src="https://dsdc.mgu.ac.in/exQpMgmt/images/logo.gif" width="55" height="60" />
+                            </td>
+                            <td width="600" class="header">
+                                <table align="left" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td align="left" class="header"
+                                            style="padding-left:10px;  border-left: 0px solid #E8E8E8;border-right: 0px solid #E8E8E8;">
+                                            <strong>Mahatma Gandhi University CBCSS Exam Results</strong>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:14px;" align="center"> <strong>(Revised Scheme)</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="header"></td>
+                                    </tr>
+                                </table>
+                            </td>
+
+
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td colspan="3" height="450" valign="top" align="center">
+                    <noscript>
+                        <table align="center" cellpadding="0" cellspacing="0" width="750" class="normal_font">
+                            <tr>
+
+                            </tr>
+                            <tr>
+                                <td height="20" align="center" class="redBold">***** Warning *****</td>
+                            </tr>
+                            <tr>
+                                <td height="20"></td>
+                            </tr>
+                            <tr>
+                                <td height="30" align="center">It is seemed that the browser javascript property is
+                                    disabled</td>
+                            </tr>
+                            <tr>
+                                <td height="30" align="center">You can access this site only after enabling the browser
+                                    java script property. To enable Java Script plese do the following steps</td>
+                            </tr>
+                            <tr>
+                                <td height="30" align="center">For Mozilla Firefox: tools -> options -> Tick the "Enable
+                                    JavaScript" check box</td>
+                            </tr>
+                            <tr>
+                                <td height="30" align="center">For Internet Explorer 6: tools -> internet options ->
+                                    security -> custom level -> scripting -> Tick the "Enable" check box</td>
+                            </tr>
+
+                        </table>
+                    </noscript>
+
+                    <div id="mgu_btech_contentholder" style="">
+
+
+                        <table align="center" cellpadding="0" cellspacing="0" width="950">
+                            <tr>
+                                <td height="5" align="right"></td>
+
+                            </tr>
+                            <!--<tr>
+    	<td height="20" align="center" class="back_text">UG CBCSS (Revised Scheme) Results -2017 Admission onwards</td>
+    </tr>-->
+
+                            <tr>
+                                <td height="25" align="center" class="link_black">
+                                    <form method="post"
+                                        action="https://dsdc.mgu.ac.in/exQpMgmt/index.php/public/ResultView_ctrl/"
+                                        name="vwfrm" id="vwfrm" autocomplete="off">
+                                        <fieldset class="green_frame" style="width:900px;">
+
+                                            <table align="center" cellpadding="0" cellspacing="0">
+                                                <tr>
+                                                    <td colspan="3" height="10"></td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td height="30">Examination</td>
+                                                    <td width="33" align="center"><strong>:</strong><span
+                                                            class="required">*</span></td>
+                                                    <td align="left">
+
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" height="6"></td>
+
+                                                </tr>
+
+                                                <tr>
+                                                    <td height="30">PRN</td>
+                                                    <td width="33" align="center"><strong>:</strong><span
+                                                            class="required">*</span></td>
+                                                    <td align="left">
+                                                        <input type="text" id="prn" name="prn" value="230021084506"
+                                                            class="validate[required,custom[onlyNumber],length[12,12]] txtBox"
+                                                            onKeyPress="return number(event);" size="12" maxlength="12"
+                                                            style="font-size:14px; font-weight:bold; height:20px;"
+                                                            tabindex="2" value="" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" height="5"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td align="center"></td>
+                                                    <td align="left">
+                                                        <!--                        <input type="submit" id="btnresult" name="btnresult" value="Get Result" class="submit" style="background-color:#036; color:#FFF; font-weight:bold; padding:6px;" tabindex="3" />-->
+                                                        <button id="btnresult" name="btnresult" value="Get Result"
+                                                            class="submit"
+                                                            style="background-color:#036; color:#FFF; font-weight:bold; padding:6px;"
+                                                            tabindex="3">Get Result</button>
+                                                    </td>
+                                                </tr>
+
+                                            </table>
+                                        </fieldset>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td height="5" align="right"></td>
+                            </tr>
+
+                            <tr>
+                                <td align="center">
+                                    <fieldset class="frame" style="width:900px;">
+                                        <legend align="center" class="back_text1"><strong>Result </strong></legend>
+                                        <table align="center" cellpadding="6" cellspacing="0">
+                                            <tr>
+                                                <td colspan="9" align="left" style="font-weight:bold;">
+                                                    <table align="left" cellpadding="0" cellspacing="0">
+                                                        <tr>
+                                                            <td align="left" height="20"><strong>Permanent Register
+                                                                    Number:</strong></td>
+                                                            <td align="center" width="30"><strong>:</strong></td>
+                                                            <td align="left" style="font-size:14px">230021084506</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="left" height="20"><strong>Name of
+                                                                    Student:</strong></td>
+                                                            <td align="center"><strong>:</strong></td>
+                                                            <td align="left" style="font-size:14px;color:#936;">ABEL
+                                                                GEORGE ANTONY</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="left" height="20"><strong>Programme:</strong>
+                                                            </td>
+                                                            <td align="center"><strong>:</strong></td>
+                                                            <td align="left">Bachelor of Computer Application</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="left" height="20"><strong>Exam Centre:</strong>
+                                                            </td>
+                                                            <td align="center"><strong>:</strong></td>
+                                                            <td align="left">Bharata Mata College of Commerce &Arts
+                                                                ,Chunangamvely,Aluva</td>
+                                                        </tr>
+
+                                                    </table>
+                                                </td>
+                                            </tr>
+
+                                        </table>
+                                        <table>
+
+                                            <tr>
+                                                <td width="90" rowspan="2" align="center" class="bord_rslt">
+                                                    <strong>Course Code</strong></td>
+                                                <td width="450" rowspan="2" align="center" class="bord_rslt">
+                                                    <strong>Course</strong></td>
+                                                <td width="5" rowspan="2" align="center" class="bord_rslt">
+                                                    <strong>Credit</strong></td>
+                                                <td width="100" colspan="2" align="center" class="bord_rslt"
+                                                    height="20"><strong>EXTERNAL</strong></td>
+                                                <td width="100" colspan="2" align="center" class="bord_rslt">
+                                                    <strong>INTERNAL</strong></td>
+                                                <td width="60" rowspan="2" align="center" class="bord_rslt">
+                                                    <strong>Total</strong></td>
+                                                <td width="60" rowspan="2" align="center" class="bord_rslt">
+                                                    <strong>MAX</strong></td>
+                                                <td width="60" rowspan="2" align="center" class="bord_rslt">
+                                                    <strong>Grade</strong></td>
+                                                <td width="60" rowspan="2" align="center" class="bord_rslt">
+                                                    <strong>GP</strong></td>
+                                                <td width="60" rowspan="2" align="center" class="bord_rslt">
+                                                    <strong>CP</strong></td>
+                                                <td width="70" rowspan="2" align="center" class="bord_rslt">
+                                                    <strong>Result</strong></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td width="60" align="center" class="bord_rslt" height="20">
+                                                    <strong>ESA</strong></td>
+                                                <td width="60" align="center" class="bord_rslt"><strong>MAX</strong>
+                                                </td>
+                                                <td width="60" align="center" class="bord_rslt"><strong>ISA</strong>
+                                                </td>
+                                                <td width="60" align="center" class="bord_rslt"><strong>MAX</strong>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td align="center" class="bord_rslt" height="30">EN1CCT01</td>
+                                                <td align="left" class="bord_rslt" style="padding-left:5px;">English -
+                                                    Fine - tune Your English</td>
+                                                <td align="center" class="bord_rslt">4</td>
+
+                                                <td align="center" class="bord_rslt">41</td>
+                                                <td align="center" class="bord_rslt">80 </td>
+
+                                                <td align="center" class="bord_rslt">16
+                                                </td>
+                                                <td align="center" class="bord_rslt">20</td>
+
+                                                <td align="center" class="bord_rslt">57</td>
+                                                <td align="center" class="bord_rslt">100</td>
+                                                <td align="center" class="bord_rslt">B</td>
+
+                                                <td align="center" class="bord_rslt">6</td>
+                                                <td align="center" class="bord_rslt">24</td>
+                                                <td align="center" class="bord_rslt" style="font-size:11px;">
+                                                    <strong><span style='color:green;'>Passed</span></strong></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td align="center" class="bord_rslt" height="30">CS1CRP01</td>
+                                                <td align="left" class="bord_rslt" style="padding-left:5px;">Software
+                                                    Lab I </td>
+                                                <td align="center" class="bord_rslt">2</td>
+
+                                                <td align="center" class="bord_rslt">78</td>
+                                                <td align="center" class="bord_rslt">80 </td>
+
+                                                <td align="center" class="bord_rslt">20
+                                                </td>
+                                                <td align="center" class="bord_rslt">20</td>
+
+                                                <td align="center" class="bord_rslt">98</td>
+                                                <td align="center" class="bord_rslt">100</td>
+                                                <td align="center" class="bord_rslt">S</td>
+
+                                                <td align="center" class="bord_rslt">10</td>
+                                                <td align="center" class="bord_rslt">20</td>
+                                                <td align="center" class="bord_rslt" style="font-size:11px;">
+                                                    <strong><span style='color:green;'>Passed</span></strong></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td align="center" class="bord_rslt" height="30">CS1CRT01</td>
+                                                <td align="left" class="bord_rslt" style="padding-left:5px;">Computer
+                                                    Fundamentals and Digital Principles</td>
+                                                <td align="center" class="bord_rslt">4</td>
+
+                                                <td align="center" class="bord_rslt">50</td>
+                                                <td align="center" class="bord_rslt">80 </td>
+
+                                                <td align="center" class="bord_rslt">16
+                                                </td>
+                                                <td align="center" class="bord_rslt">20</td>
+
+                                                <td align="center" class="bord_rslt">66</td>
+                                                <td align="center" class="bord_rslt">100</td>
+                                                <td align="center" class="bord_rslt">B+</td>
+
+                                                <td align="center" class="bord_rslt">7</td>
+                                                <td align="center" class="bord_rslt">28</td>
+                                                <td align="center" class="bord_rslt" style="font-size:11px;">
+                                                    <strong><span style='color:green;'>Passed</span></strong></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td align="center" class="bord_rslt" height="30">CS1CRT02</td>
+                                                <td align="left" class="bord_rslt" style="padding-left:5px;">Methodology
+                                                    of Programming and C Language</td>
+                                                <td align="center" class="bord_rslt">3</td>
+
+                                                <td align="center" class="bord_rslt">37</td>
+                                                <td align="center" class="bord_rslt">80 </td>
+
+                                                <td align="center" class="bord_rslt">20
+                                                </td>
+                                                <td align="center" class="bord_rslt">20</td>
+
+                                                <td align="center" class="bord_rslt">57</td>
+                                                <td align="center" class="bord_rslt">100</td>
+                                                <td align="center" class="bord_rslt">B</td>
+
+                                                <td align="center" class="bord_rslt">6</td>
+                                                <td align="center" class="bord_rslt">18</td>
+                                                <td align="center" class="bord_rslt" style="font-size:11px;">
+                                                    <strong><span style='color:green;'>Passed</span></strong></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td align="center" class="bord_rslt" height="30">MM1CMT03</td>
+                                                <td align="left" class="bord_rslt" style="padding-left:5px;">Mathematics
+                                                    - Discrete Mathematics I</td>
+                                                <td align="center" class="bord_rslt">4</td>
+
+                                                <td align="center" class="bord_rslt">24</td>
+                                                <td align="center" class="bord_rslt">80 </td>
+
+                                                <td align="center" class="bord_rslt">18
+                                                </td>
+                                                <td align="center" class="bord_rslt">20</td>
+
+                                                <td align="center" class="bord_rslt">42</td>
+                                                <td align="center" class="bord_rslt">100</td>
+                                                <td align="center" class="bord_rslt">D</td>
+
+                                                <td align="center" class="bord_rslt">4</td>
+                                                <td align="center" class="bord_rslt">16</td>
+                                                <td align="center" class="bord_rslt" style="font-size:11px;">
+                                                    <strong><span style='color:green;'>Passed</span></strong></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td align="center" class="bord_rslt" height="30">ST1CMT31</td>
+                                                <td align="left" class="bord_rslt" style="padding-left:5px;">Basic
+                                                    Statistics and Introductory Probability Theory </td>
+                                                <td align="center" class="bord_rslt">4</td>
+
+                                                <td align="center" class="bord_rslt">29</td>
+                                                <td align="center" class="bord_rslt">80 </td>
+
+                                                <td align="center" class="bord_rslt">16
+                                                </td>
+                                                <td align="center" class="bord_rslt">20</td>
+
+                                                <td align="center" class="bord_rslt">45</td>
+                                                <td align="center" class="bord_rslt">100</td>
+                                                <td align="center" class="bord_rslt">C</td>
+
+                                                <td align="center" class="bord_rslt">5</td>
+                                                <td align="center" class="bord_rslt">20</td>
+                                                <td align="center" class="bord_rslt" style="font-size:11px;">
+                                                    <strong><span style='color:green;'>Passed</span></strong></td>
+
+                                            </tr>
+
+
+                                            <tr height="30">
+                                                <!--<td align="center" class="bord_rslt" height="30"></td>-->
+                                                <td align="center" class="bord_rslt" colspan="2"><strong>SEMESTER
+                                                        RESULT</strong></td>
+                                                <td align="center" class="bord_rslt"><strong>21</strong></td>
+                                                <td align="center" class="bord_rslt" colspan="4"><strong>SCPA:
+                                                        &nbsp;&nbsp;6.00</strong></td>
+                                                <td align="center" class="bord_rslt"><strong>365</strong></td>
+                                                <td align="center" class="bord_rslt"><strong>600</strong></td>
+                                                <td align="center" class="bord_rslt"><strong>B</strong></td>
+                                                <td align="center" class="bord_rslt"></td>
+                                                <td align="center" class="bord_rslt"><strong>126</strong></td>
+                                                <td align="center" class="bord_rslt"><strong><span
+                                                            style='color:#390;'>Passed</span></strong></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td height="5"></td>
+                                            </tr>
+                                            <tr class="noPrint">
+                                                <td colspan="13" align="center" height="30" style="font-weight:bold;">
+                                                    <!--<a href="modules/reports/studentResult.php?exam=&PRN=" target="_blank" style="text-decoration:none;"><input type="button" name="btnprint" id="btnprint" value="PRINT" style="background-color:#036; color:#FFF; font-weight:bold; padding:6px;" onclick="window.print();return false;" /></a>-->
+                                                </td>
+
+                                            </tr>
+                                            <!--new code for semster 6 19062020 start-->
+
+                                            <!--final result view start-->
+                                            <!--   new code for semster 6 19062020 end-->
+                                            <tr>
+                                                <td height="10" colspan="9"></td>
+                                            </tr>
+                                            <tr>
+                                                <td height="10" colspan="13" align="justify">
+                                                    <span style="border:thin dotted;color:#F03;">
+                                                        <strong>NOTE:</strong><em>The results made available through the
+                                                            web are intended only to provide immediate information to
+                                                            the examinees. This is not a substitute for the original
+                                                            marklists/ grade sheets issued to the candidates. Mahatma
+                                                            Gandhi University reserves the right to update the contents
+                                                            of the web pages without notice. However, discrepancies
+                                                            which may arise due to transmission errors may be informed
+                                                            to the university at email address : support@mgu.ac.in</em>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td height="5" align="right"></td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" height="15" align="center"></td>
+            </tr>
+            <tr>
+                <td colspan="3" height="30" class="footer" align="center">&copy;<strong>2018 MG University, All Rights
+                        Reserved.</strong><br /><strong>Powered by CETEX SDT, M.G.University</strong></td>
+            </tr>
+        </table>
+    </center>
+</body>
+
+</html>
