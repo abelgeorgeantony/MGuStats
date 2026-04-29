@@ -1,5 +1,8 @@
 venv/
 env/
 __pycache__/
-raw_data/
 .codex
+
+raw_data/*
+!raw_data/invalid_prns.txt
+!raw_data/valid_prns.txt

@@ -11,6 +11,7 @@ Extraction-phase tooling for Mahatma Gandhi University (MGU) UG CBCSS mark lists
 - retries timeouts and `502/503/504` responses with exponential backoff
 - trims the response down to the result tables or the `Result Not Available` marker
 - writes each response to `raw_data/<PRN>/<EXAM_ID>.html`
+- records invalid PRNs in `raw_data/invalid_prns.txt` instead of saving HTML entries for them
 
 It does not calculate grades, parse marks into JSON, or do CGPA logic mid-flight.
 
@@ -64,7 +65,8 @@ raw_data/
     147.html
 ```
 
-If a saved file contains `Result Not Available`, that PRN/exam combination is invalid.
+If every exam ID tried for a PRN returns `Result Not Available`, that PRN is treated as invalid.
+Invalid PRNs are appended once to `raw_data/invalid_prns.txt` and do not get a `raw_data/<PRN>/` folder or saved HTML files.
 
 ## Tests
 

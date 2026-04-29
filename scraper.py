@@ -5,6 +5,7 @@ import asyncio
 import json
 import logging
 from dataclasses import dataclass
+from enum import Enum
 from html import escape
 from pathlib import Path
 from typing import Iterator, Sequence
@@ -28,14 +29,15 @@ logging.basicConfig(
 DEFAULT_TARGET_URL = "https://dsdc.mgu.ac.in/exQpMgmt/index.php/public/ResultView_ctrl/"
 DEFAULT_METADATA_FILE = Path("metadata.json")
 DEFAULT_RAW_DATA_DIR = Path("raw_data")
-DEFAULT_CONCURRENCY_LIMIT = 12
+INVALID_PRN_LOG_FILENAME = "invalid_prns.txt"
+DEFAULT_CONCURRENCY_LIMIT = 20
 DEFAULT_MAX_RETRIES = 4
 DEFAULT_TIMEOUT_SECONDS = 15
 DEFAULT_COUNTER_START = 1
 DEFAULT_COUNTER_END = 120000
 DEFAULT_STREAM_MARKER = "0021"
 DEFAULT_YEARS = ("23",)
-VALID_YEARS = tuple(f"{year:02d}" for year in range(17, 24))
+VALID_YEARS = tuple(f"{year:02d}" for year in range(17, 30))
 RETRYABLE_STATUSES = {502, 503, 504}
 RESULT_NOT_AVAILABLE = "result not available"
 RESULT_FIELD_MARKERS = (
@@ -68,7 +70,7 @@ class ScrapeConfig:
 @dataclass(frozen=True)
 class ScrapeJob:
     prn: str
-    exam_id: str
+    exam_ids: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -76,6 +78,19 @@ class ExtractedPayload:
     document: str
     table_count: int
     is_invalid_prn: bool
+
+
+@dataclass
+class InvalidPrnRegistry:
+    file_path: Path
+    seen: set[str]
+    lock: asyncio.Lock
+
+
+class FetchOutcome(Enum):
+    VALID = "valid"
+    INVALID = "invalid"
+    FAILED = "failed"
 
 
 class RetryableGatewayError(Exception):
@@ -98,19 +113,12 @@ def build_soup(html_content: str) -> BeautifulSoup:
 
 
 def find_result_container(soup: BeautifulSoup):
-    invalid_container = None
-
     for fieldset in soup.find_all("fieldset"):
         text = normalize_text(fieldset.get_text(" ", strip=True)).casefold()
         if not text:
             continue
         if all(marker in text for marker in RESULT_FIELD_MARKERS):
             return fieldset
-        if RESULT_NOT_AVAILABLE in text and invalid_container is None:
-            invalid_container = fieldset
-
-    if invalid_container is not None:
-        return invalid_container
 
     for table in soup.find_all("table"):
         text = normalize_text(table.get_text(" ", strip=True)).casefold()
@@ -118,23 +126,32 @@ def find_result_container(soup: BeautifulSoup):
             continue
         if all(marker in text for marker in RESULT_FIELD_MARKERS):
             return table.parent or table
-        if RESULT_NOT_AVAILABLE in text:
-            return table.parent or table
 
     return None
 
 
 def find_invalid_message(node) -> str | None:
+    candidates: list[str] = []
+
     for element in node.find_all(["p", "div", "span", "td", "strong"]):
         text = normalize_text(element.get_text(" ", strip=True))
         if RESULT_NOT_AVAILABLE in text.casefold():
-            return text
+            candidates.append(text)
 
     node_text = normalize_text(node.get_text(" ", strip=True))
     if RESULT_NOT_AVAILABLE in node_text.casefold():
-        return "Result Not Available"
+        candidates.append(node_text)
 
-    return None
+    if not candidates:
+        return None
+
+    exactish_candidates = [
+        candidate for candidate in candidates if candidate.casefold().startswith("result not available")
+    ]
+    if exactish_candidates:
+        return min(exactish_candidates, key=len)
+
+    return min(candidates, key=len)
 
 
 def extract_top_level_tables(container) -> list[str]:
@@ -213,10 +230,36 @@ def save_payload(raw_data_dir: Path, prn: str, exam_id: str, payload: ExtractedP
     return file_path
 
 
-def load_exam_ids(metadata_file: Path) -> list[str]:
-    metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
-    exam_ids: list[str] = []
+def load_invalid_prn_registry(raw_data_dir: Path) -> InvalidPrnRegistry:
+    file_path = raw_data_dir / INVALID_PRN_LOG_FILENAME
     seen: set[str] = set()
+
+    if file_path.exists():
+        for line in file_path.read_text(encoding="utf-8").splitlines():
+            prn = line.strip()
+            if prn:
+                seen.add(prn)
+
+    return InvalidPrnRegistry(file_path=file_path, seen=seen, lock=asyncio.Lock())
+
+
+async def record_invalid_prn(registry: InvalidPrnRegistry, prn: str) -> bool:
+    async with registry.lock:
+        if prn in registry.seen:
+            return False
+
+        registry.file_path.parent.mkdir(parents=True, exist_ok=True)
+        with registry.file_path.open("a", encoding="utf-8") as handle:
+            handle.write(f"{prn}\n")
+
+        registry.seen.add(prn)
+        return True
+
+
+def load_exams_by_year(metadata_file: Path) -> dict[str, tuple[str, ...]]:
+    """Maps each 2-digit admission year to its tuple of valid exam IDs."""
+    metadata = json.loads(metadata_file.read_text(encoding="utf-8"))
+    exams_by_year: dict[str, set[str]] = {year: set() for year in VALID_YEARS}
 
     for semester_key in sorted(metadata):
         exams = metadata.get(semester_key, [])
@@ -224,12 +267,17 @@ def load_exam_ids(metadata_file: Path) -> list[str]:
             continue
         for exam in exams:
             exam_id = str(exam.get("value", "")).strip()
-            if not exam_id or exam_id in seen:
+            valid_years = exam.get("valid_prn_years", [])
+            
+            if not exam_id or not valid_years:
                 continue
-            seen.add(exam_id)
-            exam_ids.append(exam_id)
+                
+            for year in valid_years:
+                if year in exams_by_year:
+                    exams_by_year[year].add(exam_id)
 
-    return exam_ids
+    # Convert sets to sorted tuples for deterministic behavior
+    return {year: tuple(sorted(exam_ids)) for year, exam_ids in exams_by_year.items() if exam_ids}
 
 
 def iter_prns(years: Sequence[str], stream_marker: str, start: int, end: int) -> Iterator[str]:
@@ -238,8 +286,28 @@ def iter_prns(years: Sequence[str], stream_marker: str, start: int, end: int) ->
             yield f"{year}{stream_marker}{counter:06d}"
 
 
-def total_job_count(years: Sequence[str], exam_ids: Sequence[str], start: int, end: int) -> int:
-    return len(years) * (end - start + 1) * len(exam_ids)
+def total_job_count(
+    years: Sequence[str], exams_by_year: dict[str, tuple[str, ...]], start: int, end: int
+) -> int:
+    total = 0
+    prns_per_year = end - start + 1
+    for year in years:
+        total += prns_per_year * len(exams_by_year.get(year, []))
+    return total
+
+
+def should_record_invalid_prn(
+    total_exam_count: int,
+    invalid_exam_count: int,
+    valid_exam_count: int,
+    failed_exam_count: int,
+) -> bool:
+    return (
+        total_exam_count > 0
+        and invalid_exam_count == total_exam_count
+        and valid_exam_count == 0
+        and failed_exam_count == 0
+    )
 
 
 def build_payload(prn: str, exam_id: str) -> dict[str, str]:
@@ -270,52 +338,54 @@ def backoff_seconds(attempt_number: int) -> int:
     return 2 ** (attempt_number - 1)
 
 
-async def fetch_and_save(
+async def fetch_and_save_exam(
     session,
     semaphore: asyncio.Semaphore,
     config: ScrapeConfig,
-    job: ScrapeJob,
-) -> bool:
+    prn: str,
+    exam_id: str,
+) -> FetchOutcome:
     for attempt in range(1, config.max_retries + 1):
         try:
             html_content = await fetch_html(
                 session=session,
                 semaphore=semaphore,
                 target_url=config.target_url,
-                prn=job.prn,
-                exam_id=job.exam_id,
+                prn=prn,
+                exam_id=exam_id,
             )
             payload = extract_trimmed_payload(html_content)
             if payload is None:
                 logging.warning(
                     "Skipped %s exam %s because no result container was found.",
-                    job.prn,
-                    job.exam_id,
+                    prn,
+                    exam_id,
                 )
-                return False
+                return FetchOutcome.FAILED
 
-            file_path = save_payload(config.raw_data_dir, job.prn, job.exam_id, payload)
             if payload.is_invalid_prn:
-                logging.info("Saved invalid marker: %s", file_path)
-            else:
-                logging.info("Saved %s (%s tables)", file_path, payload.table_count)
-            return True
+                logging.info("No result for PRN %s on exam %s.", prn, exam_id)
+                return FetchOutcome.INVALID
+
+            file_path = save_payload(config.raw_data_dir, prn, exam_id, payload)
+            logging.info("Saved %s (%s tables)", file_path, payload.table_count)
+            return FetchOutcome.VALID
         except RetryableGatewayError as exc:
             if attempt == config.max_retries:
                 logging.error(
                     "Gateway status %s for %s exam %s after %s attempts.",
                     exc.status_code,
-                    job.prn,
-                    job.exam_id,
+                    prn,
+                    exam_id,
                     config.max_retries,
                 )
-                return False
+                return FetchOutcome.FAILED
             delay = backoff_seconds(attempt)
             logging.warning(
                 "Gateway status %s for %s exam %s. Retrying in %ss (%s/%s).",
                 exc.status_code,
-                job.prn,
-                job.exam_id,
+                prn,
+                exam_id,
                 delay,
                 attempt,
                 config.max_retries,
@@ -325,16 +395,16 @@ async def fetch_and_save(
             if attempt == config.max_retries:
                 logging.error(
                     "Timed out fetching %s exam %s after %s attempts.",
-                    job.prn,
-                    job.exam_id,
+                    prn,
+                    exam_id,
                     config.max_retries,
                 )
-                return False
+                return FetchOutcome.FAILED
             delay = backoff_seconds(attempt)
             logging.warning(
                 "Timed out fetching %s exam %s. Retrying in %ss (%s/%s).",
-                job.prn,
-                job.exam_id,
+                prn,
+                exam_id,
                 delay,
                 attempt,
                 config.max_retries,
@@ -344,26 +414,26 @@ async def fetch_and_save(
             logging.error(
                 "Unexpected HTTP status %s for %s exam %s: %s",
                 exc.status,
-                job.prn,
-                job.exam_id,
+                prn,
+                exam_id,
                 exc,
             )
-            return False
+            return FetchOutcome.FAILED
         except aiohttp.ClientError as exc:
             if attempt == config.max_retries:
                 logging.error(
                     "HTTP client error for %s exam %s after %s attempts: %s",
-                    job.prn,
-                    job.exam_id,
+                    prn,
+                    exam_id,
                     config.max_retries,
                     exc,
                 )
-                return False
+                return FetchOutcome.FAILED
             delay = backoff_seconds(attempt)
             logging.warning(
                 "HTTP client error for %s exam %s. Retrying in %ss (%s/%s): %s",
-                job.prn,
-                job.exam_id,
+                prn,
+                exam_id,
                 delay,
                 attempt,
                 config.max_retries,
@@ -371,28 +441,109 @@ async def fetch_and_save(
             )
             await asyncio.sleep(delay)
         except OSError as exc:
-            logging.error("Could not save %s exam %s: %s", job.prn, job.exam_id, exc)
-            return False
+            logging.error("Could not save %s exam %s: %s", prn, exam_id, exc)
+            return FetchOutcome.FAILED
 
-    return False
+    return FetchOutcome.FAILED
 
 
-async def produce_jobs(queue: asyncio.Queue, config: ScrapeConfig, exam_ids: Sequence[str]) -> None:
+async def fetch_and_save_prn(
+    session,
+    semaphore: asyncio.Semaphore,
+    config: ScrapeConfig,
+    job: ScrapeJob,
+    invalid_prn_registry: InvalidPrnRegistry,
+) -> bool:
+    if job.prn in invalid_prn_registry.seen:
+        logging.info("Skipping known invalid PRN %s.", job.prn)
+        return False
+
+    valid_exam_count = 0
+    invalid_exam_count = 0
+    failed_exam_count = 0
+
+    for exam_id in job.exam_ids:
+        outcome = await fetch_and_save_exam(
+            session=session,
+            semaphore=semaphore,
+            config=config,
+            prn=job.prn,
+            exam_id=exam_id,
+        )
+        if outcome is FetchOutcome.VALID:
+            valid_exam_count += 1
+        elif outcome is FetchOutcome.INVALID:
+            invalid_exam_count += 1
+        else:
+            failed_exam_count += 1
+
+    if should_record_invalid_prn(
+        total_exam_count=len(job.exam_ids),
+        invalid_exam_count=invalid_exam_count,
+        valid_exam_count=valid_exam_count,
+        failed_exam_count=failed_exam_count,
+    ):
+        was_recorded = await record_invalid_prn(invalid_prn_registry, job.prn)
+        if was_recorded:
+            logging.info("Recorded invalid PRN %s in %s", job.prn, invalid_prn_registry.file_path)
+        return False
+
+    if valid_exam_count == 0 and failed_exam_count > 0:
+        logging.warning(
+            "PRN %s had no valid results after %s exam attempts (%s invalid, %s failed); not marking invalid.",
+            job.prn,
+            len(job.exam_ids),
+            invalid_exam_count,
+            failed_exam_count,
+        )
+
+    return valid_exam_count > 0
+
+
+async def produce_jobs(
+    queue: asyncio.Queue,
+    config: ScrapeConfig,
+    exams_by_year: dict[str, tuple[str, ...]],
+    invalid_prn_registry: InvalidPrnRegistry,
+) -> None:
     for prn in iter_prns(config.years, config.stream_marker, config.counter_start, config.counter_end):
-        for exam_id in exam_ids:
-            await queue.put(ScrapeJob(prn=prn, exam_id=exam_id))
+        if prn in invalid_prn_registry.seen:
+            logging.info("Skipping previously recorded invalid PRN %s.", prn)
+            continue
+
+        # Extract the admission year prefix (e.g., "23")
+        prn_year = prn[:2]
+        exam_ids_for_this_prn = exams_by_year.get(prn_year)
+        
+        # If there are no valid exams for this PRN's year, skip it entirely
+        if not exam_ids_for_this_prn:
+            continue
+
+        await queue.put(ScrapeJob(prn=prn, exam_ids=exam_ids_for_this_prn))
 
     for _ in range(config.concurrency_limit):
         await queue.put(None)
 
 
-async def worker(queue: asyncio.Queue, session, semaphore: asyncio.Semaphore, config: ScrapeConfig) -> None:
+async def worker(
+    queue: asyncio.Queue,
+    session,
+    semaphore: asyncio.Semaphore,
+    config: ScrapeConfig,
+    invalid_prn_registry: InvalidPrnRegistry,
+) -> None:
     while True:
         job = await queue.get()
         try:
             if job is None:
                 return
-            await fetch_and_save(session=session, semaphore=semaphore, config=config, job=job)
+            await fetch_and_save_prn(
+                session=session,
+                semaphore=semaphore,
+                config=config,
+                job=job,
+                invalid_prn_registry=invalid_prn_registry,
+            )
         finally:
             queue.task_done()
 
@@ -412,8 +563,8 @@ def validate_config(args: argparse.Namespace) -> ScrapeConfig:
         )
     if args.stream_marker != DEFAULT_STREAM_MARKER:
         raise ValueError("The UG CBCSS stream marker must remain 0021.")
-    if not 10 <= args.concurrency <= 15:
-        raise ValueError("Concurrency must stay between 10 and 15.")
+    if not 10 <= args.concurrency <= 20:
+        raise ValueError("Concurrency must stay between 10 and 20.")
     if args.counter_start < 1 or args.counter_end < args.counter_start:
         raise ValueError("Counter range must be positive and ordered.")
     if args.max_retries < 1:
@@ -465,11 +616,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
 async def run(config: ScrapeConfig) -> None:
     require_network_dependencies()
 
-    exam_ids = load_exam_ids(config.metadata_file)
-    if not exam_ids:
-        raise RuntimeError(f"No exam IDs found in {config.metadata_file}.")
+    exams_by_year = load_exams_by_year(config.metadata_file)
+    if not exams_by_year:
+        raise RuntimeError(f"No valid exam mappings found in {config.metadata_file}.")
 
     config.raw_data_dir.mkdir(parents=True, exist_ok=True)
+    invalid_prn_registry = load_invalid_prn_registry(config.raw_data_dir)
 
     queue: asyncio.Queue = asyncio.Queue(maxsize=config.concurrency_limit * 4)
     timeout = ClientTimeout(total=config.timeout_seconds)
@@ -481,15 +633,19 @@ async def run(config: ScrapeConfig) -> None:
 
     total_jobs = total_job_count(
         years=config.years,
-        exam_ids=exam_ids,
+        exams_by_year=exams_by_year,
         start=config.counter_start,
         end=config.counter_end,
     )
+    
+    # Calculate unique exams across all targeted years for logging
+    unique_exams_in_scope = len({exam for year in config.years for exam in exams_by_year.get(year, [])})
+    
     logging.info(
-        "Queueing %s requests across years %s with %s exam IDs.",
+        "Queueing %s targeted requests across years %s with %s unique exam IDs.",
         total_jobs,
         ", ".join(config.years),
-        len(exam_ids),
+        unique_exams_in_scope,
     )
 
     async with aiohttp.ClientSession(
@@ -497,9 +653,24 @@ async def run(config: ScrapeConfig) -> None:
         timeout=timeout,
         headers=DEFAULT_HEADERS,
     ) as session:
-        producer = asyncio.create_task(produce_jobs(queue=queue, config=config, exam_ids=exam_ids))
+        producer = asyncio.create_task(
+            produce_jobs(
+                queue=queue,
+                config=config,
+                exams_by_year=exams_by_year, # Passing the new dict here
+                invalid_prn_registry=invalid_prn_registry,
+            )
+        )
         workers = [
-            asyncio.create_task(worker(queue=queue, session=session, semaphore=semaphore, config=config))
+            asyncio.create_task(
+                worker(
+                    queue=queue,
+                    session=session,
+                    semaphore=semaphore,
+                    config=config,
+                    invalid_prn_registry=invalid_prn_registry,
+                )
+            )
             for _ in range(config.concurrency_limit)
         ]
 
