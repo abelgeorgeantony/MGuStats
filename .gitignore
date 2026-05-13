@@ -4,5 +4,6 @@ __pycache__/
 .codex
 
 raw_data/*
+!raw_data/schema.sql
 !raw_data/invalid_prns.txt
 !raw_data/valid_prns.txt

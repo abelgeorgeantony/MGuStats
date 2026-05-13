@@ -52,7 +52,7 @@ Notes:
 
 - valid UG CBCSS years are `17` through `23`
 - the stream marker is locked to `0021`
-- concurrency is intentionally restricted to `10-15`
+- concurrency is intentionally restricted to `10-20`
 
 ## Output
 
